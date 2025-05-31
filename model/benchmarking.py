@@ -24,7 +24,7 @@ def benchmark_inference_speed(model, model_name, device, num_runs=100):
 inference_results = []
 results = [{'name': 'LSTM', 'save_path': 'best_lstm_gesture_model.pth' },
            {'name': 'GRU', 'save_path': 'best_gru_gesture_model.pth'},
-           {'name': 'TCN', 'save_path': 'best_tcn_gesture_model.pth'},]
+           {'name': 'TCN', 'save_path': 'best_tcn_optuna_model.pth'},]
 for result in results:
     model_class = eval(result['name'].upper() + 'Model')  # Get class by name
     model = model_class()

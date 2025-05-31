@@ -10,11 +10,6 @@ from data_set import GestureDataset
 from lstm_gru_models import LSTMModel, GRUModel
 from basic_tcn import TCNModel
 
-# Parameters
-# input_size = 63
-# num_channels = [64, 64] # Number of channels in each TCN layer
-# output_size = 4
-# kernel_size = 5
 batch_size = 64
 epochs = 50
 lr = 0.00035
@@ -26,17 +21,19 @@ dataset = GestureDataset('dataset', classes)
 train_size = int(0.75 * len(dataset))
 val_size = len(dataset) - train_size
 train_data, val_data = random_split(dataset, [train_size, val_size])
-train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
-val_loader = DataLoader(val_data, batch_size=batch_size)
 
 # Model
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Training loop
-def train_model(model, model_name='model', num_epochs=50, save_path='best_tcn_gesture_model.pth'):
+def train_model(model, model_name='model', num_epochs=50, save_path='best_tcn_gesture_model.pth', config=None):
     model.to(device)
-    # optimizer = torch.optim.RMSprop(model.parameters(), lr=lr, momentum=0.6, weight_decay=1e-4)
-    optimizer = optim.AdamW(model.parameters(), lr=lr, weight_decay=5e-4)
+    
+# Create dataloaders with potentially tuned batch size
+    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(val_data, batch_size=batch_size)
+    
+    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=5e-4) 
     criterion = nn.CrossEntropyLoss()
 
     best_val_loss = float('inf')
@@ -145,18 +142,19 @@ def train_model(model, model_name='model', num_epochs=50, save_path='best_tcn_ge
     plt.show()
     return history
 
-
-
-
 if __name__ == "__main__":
     tcn_model = TCNModel()
-    tcn_history = train_model(tcn_model, model_name="TCN")
+    tcn_history = train_model(tcn_model, model_name="TCN", 
+                             save_path='best_tcn_gesture_model.pth')
     
-    lstm_model = LSTMModel()
-    # lstm_history = train_model(lstm_model, model_name='LSTM', save_path='best_lstm_gesture_model.pth')
+    # lstm_model = LSTMModel()
+    # lstm_history = train_model(lstm_model, model_name='LSTM', 
+    #                           save_path='best_lstm_gesture_model.pth',
+    #                           config=tuned_params.get("LSTM", {}))
     
-    gru_model = GRUModel()
-    # gru_history = train_model(gru_model, model_name='GRU', save_path='best_gru_gesture_model.pth')
+    # gru_model = GRUModel()
+    # gru_history = train_model(gru_model, model_name='GRU', 
+    #                          save_path='best_gru_gesture_model.pth',
+    #                          config=tuned_params.get("GRU", {}))
 
-    # results = [tcn_history, lstm_history, gru_history]
-    # print("Training complete. Best model saved as 'best_tcn_gesture_model.pth'")
+    print("Training complete with tuned hyperparameters!")

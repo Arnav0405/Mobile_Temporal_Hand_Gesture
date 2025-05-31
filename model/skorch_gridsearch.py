@@ -54,10 +54,10 @@ def load_gesture_data(dataset_path='dataset', classes=None):
 if __name__ == "__main__":
     # Define hyperparameter grid
     param_grid = {
-        'module__dropout': [0.15, 0.2, 0.25],
-        'module__kernel_size': [3, 5],
-        'module__num_channels': [[32, 64], [32, 32]],
-        'lr': [0.0001, 0.0002, 0.0003],
+        'module__dropout': [0.05, 0.1, 0.15],
+        'module__kernel_size': [5],
+        'module__num_channels': [[32, 64]],
+        'lr': [0.0003, 0.00035, 0.0004],
         'max_epochs': [50],
         'batch_size': [64]
     }

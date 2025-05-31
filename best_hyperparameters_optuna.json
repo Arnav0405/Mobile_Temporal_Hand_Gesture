@@ -1,0 +1,13 @@
+{
+    "TCN": {
+        "batch_size": 64,
+        "tcn_dropout": 0.4357389677595064,
+        "tcn_leaky_slope": 0.1540057601640175,
+        "tcn_kernel_size": 5,
+        "tcn_channels_option": 1,
+        "optimizer": "rmsprop",
+        "lr": 0.00083060425372772,
+        "weight_decay": 3.057414557691311e-05,
+        "momentum": 0.05142297547671278
+    }
+}
