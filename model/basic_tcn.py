@@ -48,7 +48,7 @@ class TemporalBlock(nn.Module):
         return self.relu(out + res)
 
 class TemporalConvNet(nn.Module):
-    def __init__(self, num_inputs, num_channels, kernel_size=2, dropout=0.2, leaky_slope=0.01):
+    def __init__(self, num_inputs, num_channels, kernel_size, dropout, leaky_slope):
         super(TemporalConvNet, self).__init__()
         layers = []
         num_levels = len(num_channels)
@@ -67,8 +67,8 @@ class TemporalConvNet(nn.Module):
         return self.network(x)
 
 class TCNModel(nn.Module):
-    def __init__(self, input_size=63, output_size=4, num_channels=[32, 64], 
-                 kernel_size=5, dropout=0.15, leaky_slope=0.01):
+    def __init__(self, input_size=63, output_size=4, num_channels=[32, 32], 
+                 kernel_size=5, dropout=0.4780003395861791, leaky_slope=0.1284525066146185):
         super(TCNModel, self).__init__()
         self.tcn = TemporalConvNet(input_size, num_channels, kernel_size, 
                                   dropout=dropout, leaky_slope=leaky_slope)

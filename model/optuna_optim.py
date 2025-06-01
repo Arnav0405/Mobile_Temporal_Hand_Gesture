@@ -27,8 +27,8 @@ def create_model(trial, model_type="TCN"):
     """Create a model with parameters suggested by Optuna"""
     if model_type == "TCN":
         # Suggest hyperparameters for TCN model
-        dropout = trial.suggest_float("tcn_dropout", 0.1, 0.5)
-        leaky_slope = trial.suggest_float("tcn_leaky_slope", 0.01, 0.2)
+        dropout = trial.suggest_float("tcn_dropout", 0.1, 0.6)
+        leaky_slope = trial.suggest_float("tcn_leaky_slope", 0.1, 0.3)
         kernel_size = trial.suggest_categorical("tcn_kernel_size", [3, 5])
         
         # For num_channels, suggest different architectures
@@ -52,11 +52,11 @@ def create_model(trial, model_type="TCN"):
 def create_optimizer(trial, model):
     """Create an optimizer with parameters suggested by Optuna"""
     # Suggest optimizer type
-    optimizer_name = trial.suggest_categorical("optimizer", ["adam", "adamw", "rmsprop"])
+    optimizer_name = trial.suggest_categorical("optimizer", ["adam", "adamw"])
     
     # Suggest learning rate & weight decay
-    lr = trial.suggest_float("lr", 1e-6, 1e-3, log=True)
-    weight_decay = trial.suggest_float("weight_decay", 1e-6, 1e-3, log=True)
+    lr = trial.suggest_float("lr", 1e-5, 1e-2, log=True)
+    weight_decay = trial.suggest_float("weight_decay", 1e-4, 1e-1, log=True)
 
     
     # Create optimizer
@@ -64,9 +64,6 @@ def create_optimizer(trial, model):
         optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     elif optimizer_name == "adamw":
         optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
-    elif optimizer_name == "rmsprop":
-        momentum = trial.suggest_float("momentum", 0.0, 0.9)
-        optimizer = torch.optim.RMSprop(model.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
     
     return optimizer
 
@@ -133,19 +130,24 @@ def objective(trial, model_type="TCN", epochs=10):
             best_val_acc = val_acc
         
         # Handle pruning
-        if trial.should_prune():
-            raise optuna.exceptions.TrialPruned()
+        if epoch % 3 == 0 or epoch == epochs - 1:
+            if trial.should_prune():
+                raise optuna.TrialPruned()
     
     return best_val_acc
 
-def tune_hyperparameters(model_type="TCN", n_trials=50, epochs=10):
+def tune_hyperparameters(model_type="TCN", n_trials=30, epochs=30):
     """Run Optuna hyperparameter tuning"""
     print(f"Starting hyperparameter tuning for {model_type} model...")
     
     # Create study object
     study = optuna.create_study(
         direction="maximize",
-        pruner=optuna.pruners.MedianPruner(n_warmup_steps=5),
+        pruner=optuna.pruners.MedianPruner(
+            n_warmup_steps=10,  # More warmup steps before pruning
+            n_startup_trials=10,  # More trials before pruning starts
+            interval_steps=3     # Only check for pruning every 3 steps
+        ),
         study_name=f"{model_type}_optimization"
     )
     
@@ -165,6 +167,42 @@ def tune_hyperparameters(model_type="TCN", n_trials=50, epochs=10):
     for key, value in trial.params.items():
         print(f"      {key}: {value}")
     
+    # Improved visualization code for tune_hyperparameters function
+    try:
+        import matplotlib.pyplot as plt
+        import optuna.visualization.matplotlib as optuna_vis
+        
+        # Create separate figures for each plot
+        plt.figure(figsize=(10, 6))
+        ax = optuna_vis.plot_optimization_history(study)
+        ax.set_title(f"{model_type} Optimization History")
+        plt.tight_layout()
+        # plt.savefig(f"{model_type}_optimization_history.png")
+        plt.close()
+                
+        # Add contour plot of two most important parameters if possible
+        try:
+            plt.subplot(2, 2, 4)
+            param_importances = optuna.importance.get_param_importances(study)
+            important_params = list(param_importances.keys())[:2]
+            if len(important_params) >= 2:
+                optuna_vis.plot_contour(study, params=important_params)
+                plt.title(f"Contour Plot ({important_params[0]} vs {important_params[1]})")
+            else:
+                plt.text(0.5, 0.5, "Not enough important parameters", 
+                        ha='center', va='center', transform=plt.gca().transAxes)
+        except Exception as e:
+            plt.text(0.5, 0.5, f"Could not create contour plot: {str(e)}", 
+                    ha='center', va='center', transform=plt.gca().transAxes)
+        
+        plt.tight_layout()
+        plt.show()
+        
+    except ImportError:
+        print("Matplotlib or Optuna visualization not available, skipping visualization.")
+    except Exception as e:
+        print(f"Error creating visualizations: {e}")
+
     return trial.params
 
 def train_best_model(params, model_type="TCN", epochs=50):
@@ -295,7 +333,7 @@ if __name__ == "__main__":
         import optuna
     
     # Run hyperparameter tuning for TCN
-    best_params = tune_hyperparameters(model_type="TCN", n_trials=20, epochs=10)
+    best_params = tune_hyperparameters(model_type="TCN", n_trials=30, epochs=15)
     
     # Save best hyperparameters
     with open("best_hyperparameters_optuna.json", "w") as f:

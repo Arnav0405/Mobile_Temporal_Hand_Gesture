@@ -65,6 +65,7 @@ def visualize_sequences():
         print(f"Playing: {files[idx]}")
         file_path = os.path.join(class_dir, files[idx])
         sequence = np.load(file_path)
+        print(sequence)
         for frame_num, frame in enumerate(sequence):
             # Create blank frame
             frame_vis = np.zeros((frame_size[1], frame_size[0], 3), dtype=np.uint8)

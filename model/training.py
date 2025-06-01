@@ -10,9 +10,10 @@ from data_set import GestureDataset
 from lstm_gru_models import LSTMModel, GRUModel
 from basic_tcn import TCNModel
 
-batch_size = 64
+batch_size = 128
 epochs = 50
-lr = 0.00035
+lr = 0.0014584183844302903
+weight_decay=0.000200795620999658
 early_stop_patience = 20
 
 # Dataset & Dataloader
@@ -33,7 +34,7 @@ def train_model(model, model_name='model', num_epochs=50, save_path='best_tcn_ge
     train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_data, batch_size=batch_size)
     
-    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=5e-4) 
+    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay) 
     criterion = nn.CrossEntropyLoss()
 
     best_val_loss = float('inf')
