@@ -27,8 +27,8 @@ def create_model(trial, model_type="TCN"):
     """Create a model with parameters suggested by Optuna"""
     if model_type == "TCN":
         # Suggest hyperparameters for TCN model
-        dropout = trial.suggest_float("tcn_dropout", 0.1, 0.6)
-        leaky_slope = trial.suggest_float("tcn_leaky_slope", 0.1, 0.3)
+        dropout = trial.suggest_float("tcn_dropout", 0.3, 0.8)
+        leaky_slope = trial.suggest_float("tcn_leaky_slope", 0.2, 0.4)
         kernel_size = trial.suggest_categorical("tcn_kernel_size", [3, 5])
         
         # For num_channels, suggest different architectures
@@ -55,8 +55,8 @@ def create_optimizer(trial, model):
     optimizer_name = trial.suggest_categorical("optimizer", ["adam", "adamw"])
     
     # Suggest learning rate & weight decay
-    lr = trial.suggest_float("lr", 1e-5, 1e-2, log=True)
-    weight_decay = trial.suggest_float("weight_decay", 1e-4, 1e-1, log=True)
+    lr = trial.suggest_float("lr", 1e-4, 1e-2, log=True)
+    weight_decay = trial.suggest_float("weight_decay", 1e-6, 1e-4, log=True)
 
     
     # Create optimizer

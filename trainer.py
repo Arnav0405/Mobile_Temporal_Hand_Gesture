@@ -40,10 +40,10 @@ def result_callback(result: HandLandmarkerResult, output_image: mp.Image, timest
 # Create dataset directories
 gesture_classes = ['swipe_up', 'swipe_down', 'thumbs_up', 'idle_gestures']
 sequence_length = 30
-dataset_dir = 'model/test'
+dataset_dir = 'model\\test'
 metadata_file = os.path.join(dataset_dir, 'metadata.csv')
 
-for cls in gesture_classes and dataset_dir != 'model/test':
+for cls in gesture_classes:
     os.makedirs(os.path.join(dataset_dir, cls), exist_ok=True)
 
 # Create metadata CSV file if it doesn't exist
@@ -164,13 +164,14 @@ with HandLandmarker.create_from_options(options) as detector:
                 class_name = gesture_classes[class_idx]
                 timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-                save_path = os.path.join(dataset_dir, f"{class_name}_seq_{len(os.listdir(dataset_dir))}.npy")
-                np.save(save_path, np.array(buffer))
+                save_path = os.path.join(dataset_dir, f"seq_{len(os.listdir(os.path.join(dataset_dir, class_name)))}.npy")
+                print(f"Saving sequence to {os.listdir(os.path.join(dataset_dir, class_name))}...")
+                # np.save(save_path, np.array(buffer))
 
                 # Save metadata
                 with open(metadata_file, mode='a', newline='') as f:
                     writer = csv.writer(f)
-                    writer.writerow([timestamp, class_name, class_idx, save_path])
+                    # writer.writerow([timestamp, class_name, class_idx, save_path])
 
                 print(f"Saved {save_path}")
                 record_key_pressed = False

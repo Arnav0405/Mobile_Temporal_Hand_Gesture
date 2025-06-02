@@ -67,7 +67,7 @@ class TemporalConvNet(nn.Module):
         return self.network(x)
 
 class TCNModel(nn.Module):
-    def __init__(self, input_size=63, output_size=4, num_channels=[32, 32], 
+    def __init__(self, input_size=63, output_size=4, num_channels=[32, 64], 
                  kernel_size=5, dropout=0.4780003395861791, leaky_slope=0.1284525066146185):
         super(TCNModel, self).__init__()
         self.tcn = TemporalConvNet(input_size, num_channels, kernel_size, 
