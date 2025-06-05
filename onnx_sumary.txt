@@ -1,0 +1,14 @@
+Testing 24 files...
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 24/24 [00:00<00:00, 355.51it/s] 
+
+===== SUMMARY =====
+Total files tested: 24
+Output match rate: 100.00%
+PyTorch accuracy: 91.67%
+ONNX accuracy: 91.67%
+Both correct rate: 91.67%
+
+===== PERFORMANCE =====
+Average PyTorch inference time: 2.06 ms
+Average ONNX inference time: 0.25 ms
+Speed improvement: 8.23x
