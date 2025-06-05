@@ -68,7 +68,7 @@ class TemporalConvNet(nn.Module):
 
 class TCNModel(nn.Module):
     def __init__(self, input_size=63, output_size=4, num_channels=[32, 64], 
-                 kernel_size=5, dropout=0.4780003395861791, leaky_slope=0.1284525066146185):
+                 kernel_size=5, dropout=0.40790795569426785, leaky_slope=0.2608152750046324):
         super(TCNModel, self).__init__()
         self.tcn = TemporalConvNet(input_size, num_channels, kernel_size, 
                                   dropout=dropout, leaky_slope=leaky_slope)
@@ -89,6 +89,7 @@ class TCNModel(nn.Module):
         o = self.linear(y[:, :, -1])  # Use last timestep
         return o
     
+    @torch.jit.ignore
     def get_config(self):
         """Return the model's configuration parameters"""
         return self.config

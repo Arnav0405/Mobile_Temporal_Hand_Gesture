@@ -1,3 +1,6 @@
 /dataset
 /error_percentage.png
 /venv
+/model/test
+/model/__pycache__
+/utils/__pycache__

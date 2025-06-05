@@ -14,6 +14,7 @@ class GestureDataset(Dataset):
 
         for label, cls in enumerate(classes):
             cls_dir = os.path.join(root_dir, cls)
+            print(os.listdir(cls_dir))  # Debugging line to check directory contents
             for file in os.listdir(cls_dir):
                 self.file_paths.append(os.path.join(cls_dir, file))
                 self.labels.append(label)
@@ -41,7 +42,6 @@ class GestureDataset(Dataset):
         data = torch.from_numpy(data)
         label = torch.tensor(label, dtype=torch.long)
         return data, label
-    
 
 if __name__ == "__main__":
     # Example usage

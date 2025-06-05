@@ -84,6 +84,8 @@ def process_result(result: HandLandmarkerResult, output_image: mp.Image, timesta
             # If we have enough frames, run inference
             if len(keypoint_buffer) == sequence_length:
                 input_seq = np.array(keypoint_buffer, dtype=np.float32)
+                print(f"Input sequence shape: {input_seq.shape}")
+                print(f"Input sequence unsequeeezed shape: {torch.from_numpy(input_seq).unsqueeze(0).shape}")
                 input_tensor = torch.from_numpy(input_seq).unsqueeze(0).to(device)
                 
                 with torch.no_grad():

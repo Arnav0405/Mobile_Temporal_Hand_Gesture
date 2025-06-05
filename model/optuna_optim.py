@@ -167,42 +167,6 @@ def tune_hyperparameters(model_type="TCN", n_trials=30, epochs=30):
     for key, value in trial.params.items():
         print(f"      {key}: {value}")
     
-    # Improved visualization code for tune_hyperparameters function
-    try:
-        import matplotlib.pyplot as plt
-        import optuna.visualization.matplotlib as optuna_vis
-        
-        # Create separate figures for each plot
-        plt.figure(figsize=(10, 6))
-        ax = optuna_vis.plot_optimization_history(study)
-        ax.set_title(f"{model_type} Optimization History")
-        plt.tight_layout()
-        # plt.savefig(f"{model_type}_optimization_history.png")
-        plt.close()
-                
-        # Add contour plot of two most important parameters if possible
-        try:
-            plt.subplot(2, 2, 4)
-            param_importances = optuna.importance.get_param_importances(study)
-            important_params = list(param_importances.keys())[:2]
-            if len(important_params) >= 2:
-                optuna_vis.plot_contour(study, params=important_params)
-                plt.title(f"Contour Plot ({important_params[0]} vs {important_params[1]})")
-            else:
-                plt.text(0.5, 0.5, "Not enough important parameters", 
-                        ha='center', va='center', transform=plt.gca().transAxes)
-        except Exception as e:
-            plt.text(0.5, 0.5, f"Could not create contour plot: {str(e)}", 
-                    ha='center', va='center', transform=plt.gca().transAxes)
-        
-        plt.tight_layout()
-        plt.show()
-        
-    except ImportError:
-        print("Matplotlib or Optuna visualization not available, skipping visualization.")
-    except Exception as e:
-        print(f"Error creating visualizations: {e}")
-
     return trial.params
 
 def train_best_model(params, model_type="TCN", epochs=50):
@@ -331,9 +295,10 @@ if __name__ == "__main__":
         import subprocess
         subprocess.check_call(["pip", "install", "optuna"])
         import optuna
+        
     
     # Run hyperparameter tuning for TCN
-    best_params = tune_hyperparameters(model_type="TCN", n_trials=30, epochs=15)
+    best_params = tune_hyperparameters(model_type="TCN", n_trials=30, epochs=30)
     
     # Save best hyperparameters
     with open("best_hyperparameters_optuna.json", "w") as f:

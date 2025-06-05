@@ -1,12 +1,12 @@
 {
     "TCN": {
-        "batch_size": 128,
-        "tcn_dropout": 0.32285443838820277,
-        "tcn_leaky_slope": 0.2691625305349623,
+        "batch_size": 32,
+        "tcn_dropout": 0.40790795569426785,
+        "tcn_leaky_slope": 0.2608152750046324,
         "tcn_kernel_size": 5,
         "tcn_channels_option": 1,
         "optimizer": "adam",
-        "lr": 0.0023529088926767723,
-        "weight_decay": 1.231285619736001e-06
+        "lr": 0.0024090238563749004,
+        "weight_decay": 3.090240851296197e-06
     }
 }
